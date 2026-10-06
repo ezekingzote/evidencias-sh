@@ -8,50 +8,30 @@
 #     ./backup_storage.sh --status     -> muestra estado del timer/cron
 # =============================================================================
 
-# -------------------------------
-#  CONFIGURACIÓN (EDITAR AQUÍ)
-# -------------------------------
-
-# Ruta del proyecto. "auto" detecta según la distro:
-#   Manjaro -> /srv/http/sistema-evidencias
-#   Debian  -> /var/www/sistema-evidencias
 PROJECT_PATH="auto"
 
-# Subcarpeta del proyecto a respaldar
 SOURCE_SUBDIR="storage"
 
-# Carpeta raíz de respaldos (aquí se creará /storage/)
 BACKUP_ROOT="$HOME/backups/sistema-evidencias"
 
-# Subcarpeta donde se guardarán los .tar.gz del storage
 BACKUP_DIR="$BACKUP_ROOT/storage"
 
-# Prefijo del archivo
 BACKUP_PREFIX="storage_backup"
 
-# Formato: tar.gz | tar.bz2 | tar.xz | zip
 COMPRESSION="tar.gz"
 
-# Cuántos respaldos conservar (0 = infinito)
 KEEP_BACKUPS=7
 
-# Ejecución automática
 AUTO_EXECUTE=true
 
-# Intervalo (systemd / cron)
 INTERVAL_SYSTEMD="daily"
 INTERVAL_CRON="0 3 * * *"
 SYSTEMD_ON_CALENDAR=""
 
-# Nombre del servicio
 SERVICE_NAME="laravel-storage-backup"
 
-# Log
 LOG_FILE="$BACKUP_ROOT/backup_storage.log"
 
-# -------------------------------
-#  DETECCIÓN DE ENTORNO
-# -------------------------------
 set -euo pipefail
 
 SCRIPT_PATH="$(readlink -f "${BASH_SOURCE[0]}")"
@@ -98,9 +78,6 @@ resolve_paths() {
     [[ -d "$SOURCE_DIR" ]] || die "No existe la ruta origen: $SOURCE_DIR"
 }
 
-# -------------------------------
-#  RESPALDO
-# -------------------------------
 do_backup() {
     mkdir -p "$BACKUP_DIR"
 
@@ -152,9 +129,6 @@ do_backup() {
     log "Respaldo finalizado correctamente."
 }
 
-# -------------------------------
-#  INSTALACIÓN AUTOMÁTICA
-# -------------------------------
 install_systemd() {
     local user_dir="$HOME/.config/systemd/user"
     mkdir -p "$user_dir"
@@ -238,9 +212,6 @@ status_auto() {
     ls -lh "$BACKUP_DIR" 2>/dev/null || echo "(sin respaldos aún)"
 }
 
-# -------------------------------
-#  MAIN
-# -------------------------------
 main() {
     local distro
     distro="$(detect_distro)"

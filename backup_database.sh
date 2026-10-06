@@ -8,55 +8,34 @@
 #     ./backup_database.sh --status     -> muestra estado y últimos dumps
 # =============================================================================
 
-# -------------------------------
-#  CONFIGURACIÓN (EDITAR AQUÍ)
-# -------------------------------
-
-# Nombre(s) de base(s) de datos a respaldar
 DB_NAMES=("evidencias")
 
-# Motor: mysql | mariadb | postgresql
 DB_ENGINE="mysql"
 
-# Conexión
 DB_HOST="127.0.0.1"
 DB_PORT="3306"
 DB_USER="ezequiel"
 
-# Password:
-#   - Recomendado: déjala vacía ("") y usa ~/.my.cnf
-#   - Si la pones aquí, queda en texto plano
 DB_PASSWORD="ezequiel2002"
 
-# Carpeta raíz de respaldos
 BACKUP_ROOT="$HOME/backups/sistema-evidencias"
 
-# Subcarpeta para los dumps
 BACKUP_DIR="$BACKUP_ROOT/database"
 
-# Prefijo
 BACKUP_PREFIX="db_backup"
 
-# Cuántos dumps conservar por BD (0 = infinito)
 KEEP_BACKUPS=7
 
-# Ejecución automática
 AUTO_EXECUTE=true
 
-# Intervalo (systemd / cron)
 INTERVAL_SYSTEMD="daily"
 INTERVAL_CRON="0 4 * * *"
 SYSTEMD_ON_CALENDAR=""
 
-# Nombre del servicio (distinto al de storage)
 SERVICE_NAME="laravel-database-backup"
 
-# Log
 LOG_FILE="$BACKUP_ROOT/backup_database.log"
 
-# -------------------------------
-#  ENTORNO
-# -------------------------------
 set -euo pipefail
 
 SCRIPT_PATH="$(readlink -f "${BASH_SOURCE[0]}")"
@@ -82,9 +61,6 @@ detect_distro() {
     fi
 }
 
-# -------------------------------
-#  DUMP
-# -------------------------------
 dump_mysql_like() {
     local db="$1"
     local out_file="$2"
@@ -176,9 +152,6 @@ do_backup() {
     log "Respaldo de base(s) de datos finalizado."
 }
 
-# -------------------------------
-#  INSTALACIÓN AUTOMÁTICA
-# -------------------------------
 install_systemd() {
     local user_dir="$HOME/.config/systemd/user"
     mkdir -p "$user_dir"
@@ -262,9 +235,6 @@ status_auto() {
     ls -lh "$BACKUP_DIR" 2>/dev/null || echo "(sin dumps aún)"
 }
 
-# -------------------------------
-#  MAIN
-# -------------------------------
 main() {
     local distro
     distro="$(detect_distro)"
